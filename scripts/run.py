@@ -14,15 +14,16 @@ model = compose.Pipeline(
     ('features', compose.TransformerUnion(
         ('numeric', compose.Pipeline(
             compose.Select(*numerical_features),
+            preprocessing.StandardScaler(),
             preprocessing.StatImputer(),
         )),
         ('categorical', compose.Pipeline(
             compose.Select(*categorical_features),
             preprocessing.StatImputer(),
-            preprocessing.OrdinalEncoder()
+            preprocessing.OneHotEncoder()
         ))
     )),
-    ('classifier', forest.ARFClassifier(n_models=200, seed=42, max_depth=20, leaf_prediction='nba', grace_period=50, lambda_value=6))
+    ('classifier', forest.ARFClassifier(n_models=200, seed=42, max_depth=20, leaf_prediction='nba', grace_period=500, lambda_value=1))
 )
 
 metric_acc = metrics.Accuracy()
